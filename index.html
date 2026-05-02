@@ -1,0 +1,2159 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Coacha — Trening EMCC Foundation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-cream: #f5f1ea;
+    --bg-warm: #ede6d8;
+    --bg-card: #fbf8f2;
+    --ink: #1a1814;
+    --ink-soft: #4a443c;
+    --ink-mute: #8a8378;
+    --accent: #c2410c;
+    --accent-soft: #ea580c;
+    --gold: #b8893d;
+    --teal: #0d6e6e;
+    --line: #d9d1c2;
+    --line-soft: #e8e1d2;
+    --shadow-sm: 0 1px 2px rgba(26,24,20,0.06);
+    --shadow-md: 0 4px 16px rgba(26,24,20,0.08);
+    --shadow-lg: 0 12px 40px rgba(26,24,20,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg-cream);
+    color: var(--ink);
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-image:
+      radial-gradient(at 15% 10%, rgba(194, 65, 12, 0.04) 0%, transparent 45%),
+      radial-gradient(at 85% 80%, rgba(13, 110, 110, 0.04) 0%, transparent 50%),
+      linear-gradient(var(--bg-cream), var(--bg-cream));
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 32px 28px 80px;
+  }
+
+  /* ============ HEADER ============ */
+  header.hero {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+  }
+
+  .hero-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .hero-meta::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1.hero-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  h1.hero-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    margin-top: 14px;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    max-width: 56ch;
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: right;
+  }
+
+  .hero-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .hero-stat strong {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink);
+    margin-right: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ============ TABS ============ */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tab {
+    flex: 1;
+    min-width: max-content;
+    padding: 12px 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .tab:hover { background: var(--bg-warm); color: var(--ink); }
+  .tab.active {
+    background: var(--ink);
+    color: var(--bg-cream);
+    box-shadow: 0 4px 12px rgba(26,24,20,0.2);
+  }
+
+  .tab-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  .panel { display: none; animation: fadeIn 0.4s ease; }
+  .panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ SECTIONS & CARDS ============ */
+  .section-head {
+    margin-bottom: 24px;
+  }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .section-desc {
+    color: var(--ink-soft);
+    max-width: 70ch;
+    font-size: 0.98rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .card:hover {
+    border-color: var(--ink-mute);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-num {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    color: var(--line);
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--bg-warm);
+    display: grid; place-items: center;
+    margin-bottom: 14px;
+    color: var(--accent);
+  }
+
+  .card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .card p { color: var(--ink-soft); font-size: 0.94rem; }
+
+  /* ============ COMPETENCY WHEEL ============ */
+  .wheel-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 40px;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 36px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 900px) {
+    .wheel-wrap { grid-template-columns: 1fr; }
+  }
+
+  .wheel-svg { width: 100%; max-width: 420px; height: auto; margin: 0 auto; }
+
+  .wheel-segment {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+  .wheel-segment:hover { filter: brightness(1.08); }
+  .wheel-segment.active path { fill: var(--accent); }
+  .wheel-segment.active text { fill: white; font-weight: 600; }
+
+  .competency-detail {
+    background: var(--bg-warm);
+    border-radius: 12px;
+    padding: 24px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .competency-detail h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .competency-detail .lead {
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .indicator-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .indicator-list li {
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .indicator-list li::before {
+    content: counter(li);
+    counter-increment: li;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--bg-warm);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+
+  .indicator-list { counter-reset: li; }
+
+  /* ============ GROW STEPPER (SESSION SIMULATOR) ============ */
+  .stepper {
+    display: flex;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 8px;
+    margin-bottom: 20px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  .step-btn {
+    flex: 1;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    color: var(--ink-mute);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    min-width: 130px;
+  }
+
+  .step-btn:hover { background: var(--bg-warm); color: var(--ink); }
+  .step-btn.active {
+    background: var(--accent);
+    color: white;
+  }
+  .step-btn.completed {
+    color: var(--teal);
+  }
+  .step-btn.completed::after {
+    content: "✓";
+    font-size: 10px;
+  }
+
+  .step-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .step-name {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  .session-canvas {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 32px;
+    min-height: 480px;
+  }
+
+  .session-stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  @media (max-width: 800px) {
+    .session-stage { grid-template-columns: 1fr; }
+  }
+
+  .stage-info h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    letter-spacing: -0.015em;
+  }
+
+  .stage-info .stage-purpose {
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+
+  .question-bank {
+    background: var(--bg-warm);
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .question-bank h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    margin-bottom: 12px;
+  }
+
+  .question {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    cursor: pointer;
+    transition: color 0.15s;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .question:last-child { border-bottom: none; }
+  .question:hover { color: var(--accent); }
+
+  .question::before {
+    content: "?";
+    font-family: 'Fraunces', serif;
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .stage-tip {
+    background: var(--bg-card);
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  .stage-tip strong {
+    color: var(--gold);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-family: 'JetBrains Mono', monospace;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .stage-tip p { font-size: 0.9rem; color: var(--ink-soft); }
+
+  .nav-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+
+  .btn:hover { border-color: var(--ink); }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg-cream);
+    border-color: var(--ink);
+  }
+  .btn-primary:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ============ RAMA CELU FORM ============ */
+  .ramka-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .ramka-item {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .ramka-num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--accent);
+    line-height: 1;
+    width: 36px;
+    text-align: center;
+  }
+
+  .ramka-q {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .ramka-purpose {
+    font-size: 0.85rem;
+    color: var(--ink-mute);
+    font-style: italic;
+  }
+
+  /* ============ MATRYCA ============ */
+  .matryca {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto 24px;
+  }
+
+  .matryca-cell {
+    aspect-ratio: 1.4;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .matryca-cell:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .matryca-cell.go { background: linear-gradient(135deg, #d4e8d8 0%, #c8e0cd 100%); border-color: #8fbf9d; }
+  .matryca-cell.stop { background: linear-gradient(135deg, #f5e6d3 0%, #ecd9be 100%); border-color: #c9b78f; }
+  .matryca-cell.brake { background: linear-gradient(135deg, #f5d3d3 0%, #ecbebe 100%); border-color: #c98f8f; }
+  .matryca-cell.avoid { background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%); border-color: #a0a0a0; }
+
+  .matryca-label {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .matryca-coords {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .matryca-desc {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  /* ============ CHECKLIST / 7 KROKÓW ============ */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .check-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .check-item:hover { border-color: var(--ink-mute); }
+  .check-item.done { background: var(--bg-warm); }
+  .check-item.done .check-text { text-decoration: line-through; color: var(--ink-mute); }
+
+  .check-box {
+    width: 22px; height: 22px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .check-item.done .check-box {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+  }
+
+  .check-text { font-size: 0.95rem; }
+  .check-text strong { display: block; margin-bottom: 2px; }
+  .check-text small { color: var(--ink-mute); font-size: 0.82rem; }
+
+  .check-target {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--bg-warm);
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* ============ COMPARISON TABLE ============ */
+  .comparison-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .comparison-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .comparison-head > div {
+    padding: 18px 24px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  .comparison-head > div:first-child {
+    background: var(--bg-warm);
+    color: var(--ink-soft);
+    border-right: 1px solid var(--line);
+  }
+
+  .comparison-head > div:last-child {
+    background: var(--ink);
+    color: var(--bg-cream);
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .comparison-row:last-child { border-bottom: none; }
+  .comparison-row > div { padding: 14px 24px; font-size: 0.92rem; }
+  .comparison-row > div:first-child {
+    background: var(--bg-warm);
+    color: var(--ink-soft);
+    border-right: 1px solid var(--line);
+  }
+
+  /* ============ BARRIERS QUIZ ============ */
+  .barrier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .barrier {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .barrier:hover { border-color: var(--accent); }
+  .barrier.flagged {
+    background: #fef0e8;
+    border-color: var(--accent);
+  }
+
+  .barrier h5 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .barrier p {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .barrier-flag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 8px;
+    display: none;
+  }
+
+  .barrier.flagged .barrier-flag { display: block; }
+
+  /* ============ RESOURCES ============ */
+  .resource-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .resource {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.15s;
+  }
+
+  .resource:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .resource-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    background: var(--bg-warm);
+    color: var(--ink-soft);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .resource-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin-bottom: 2px;
+  }
+
+  .resource-desc { font-size: 0.85rem; color: var(--ink-mute); }
+
+  .resource-arrow {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    color: var(--ink-mute);
+    transition: all 0.15s;
+  }
+
+  .resource:hover .resource-arrow {
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--ink-mute);
+    font-size: 0.82rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ FILAR PILLARS GRID ============ */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  .pillar {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .pillar-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .pillar h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  .pillar p { font-size: 0.85rem; color: var(--ink-soft); }
+
+  /* ============ ACTIVE LISTENING SELF-CHECK ============ */
+  .listen-check {
+    display: grid;
+    gap: 8px;
+  }
+
+  .listen-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+
+  .listen-row .listen-name {
+    font-weight: 500;
+    font-size: 0.94rem;
+  }
+  .listen-row .listen-desc {
+    font-size: 0.82rem;
+    color: var(--ink-mute);
+    display: block;
+  }
+
+  .toggle-group {
+    display: flex;
+    gap: 4px;
+  }
+
+  .toggle {
+    width: 32px; height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-card);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .toggle:hover { border-color: var(--ink); }
+  .toggle.active-yes {
+    background: #fde8e0;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .toggle.active-no {
+    background: #d8ecda;
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .listen-result {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: var(--bg-warm);
+    border-radius: 12px;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  .listen-result strong { color: var(--ink); }
+
+  /* Mini divider */
+  .div {
+    height: 1px;
+    background: var(--line);
+    margin: 28px 0;
+    position: relative;
+  }
+  .div::after {
+    content: "✦";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-cream);
+    color: var(--ink-mute);
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  /* Demo session output (script) */
+  .demo-script {
+    background: var(--ink);
+    color: var(--bg-cream);
+    border-radius: 16px;
+    padding: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+
+  .demo-script .actor {
+    color: var(--accent-soft);
+    font-weight: 600;
+  }
+
+  .demo-script .stage-marker {
+    color: var(--gold);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed rgba(255,255,255,0.15);
+  }
+
+  .demo-script .technique {
+    color: #94a3b8;
+    font-style: italic;
+    font-size: 0.78rem;
+    margin-left: 12px;
+  }
+
+  .demo-toggle {
+    margin-bottom: 14px;
+    display: flex;
+    gap: 6px;
+  }
+
+  /* progress badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--bg-warm);
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+  .badge.accent { background: #fde8e0; color: var(--accent); }
+  .badge.teal { background: #d8ecda; color: var(--teal); }
+
+  @media (max-width: 700px) {
+    header.hero { grid-template-columns: 1fr; }
+    .hero-stats { text-align: left; flex-direction: row; gap: 24px; }
+    .container { padding: 24px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- =========== HEADER =========== -->
+  <header class="hero">
+    <div>
+      <div class="hero-meta">EMCC Foundation · Norman Benett · Refresh 2026</div>
+      <h1 class="hero-title">Dashboard <em>Coacha</em></h1>
+      <p class="hero-sub">Powtórka i trening w oparciu o Twoje materiały z kursu Coaching Foundation oraz aktualne standardy EMCC. Osiem kompetencji, siedem kroków akredytacji EIA, model GROW i Rama Celu — wszystko w jednym miejscu.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>8</strong>kompetencji</div>
+      <div class="hero-stat"><strong>10</strong>pytań ramy celu</div>
+      <div class="hero-stat"><strong>7</strong>kroków do EIA</div>
+    </div>
+  </header>
+
+  <!-- =========== TABS =========== -->
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-panel="overview"><span class="tab-num">01</span>Podstawy</button>
+    <button class="tab" data-panel="competencies"><span class="tab-num">02</span>8 Kompetencji</button>
+    <button class="tab" data-panel="session"><span class="tab-num">03</span>Symulator sesji</button>
+    <button class="tab" data-panel="rama"><span class="tab-num">04</span>Rama celu</button>
+    <button class="tab" data-panel="techniques"><span class="tab-num">05</span>Techniki</button>
+    <button class="tab" data-panel="accreditation"><span class="tab-num">06</span>Akredytacja</button>
+    <button class="tab" data-panel="resources"><span class="tab-num">07</span>Materiały</button>
+  </nav>
+
+  <!-- =========== PANEL 1: OVERVIEW =========== -->
+  <section class="panel active" id="overview">
+    <div class="section-head">
+      <div class="section-eyebrow">Fundament — co to jest coaching</div>
+      <h2 class="section-title">Coaching nie jest doradztwem.</h2>
+      <p class="section-desc">Według definicji EMCC: coaching to profesjonalnie prowadzony proces, który inspiruje klientów do maksymalizacji ich potencjału. Klient jest ekspertem w zakresie treści, coach — w zakresie procesu.</p>
+    </div>
+
+    <div class="grid grid-3" style="margin-bottom: 28px;">
+      <div class="card">
+        <span class="card-num">01</span>
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <h3>Tu i teraz, na przyszłość</h3>
+        <p>Nie pracujemy z przeszłością ani z dysfunkcjami. Pracujemy z osobami dobrze funkcjonującymi, na ich zasobach i potencjale.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">02</span>
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3l8 4-8 4-8-4 8-4z"/><path d="M4 11l8 4 8-4M4 15l8 4 8-4"/></svg>
+        </div>
+        <h3>Partnerstwo, nie ekspertyza</h3>
+        <p>Coach i klient to partnerzy — nie mistrz i uczeń. Coach nie diagnozuje, nie leczy, nie sugeruje rozwiązań.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">03</span>
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M2 12h20"/></svg>
+        </div>
+        <h3>Rozwiązania, nie przyczyny</h3>
+        <p>Robert Dilts: technika coachingu polega na wydobywaniu mocnych stron — koncentruje się na rozwiązaniu, nie na poszukiwaniu źródeł problemu.</p>
+      </div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">8 filarów coachingu</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Założenia, na których stoi proces</h2>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar"><div class="pillar-num">1</div><h4>Użyteczność</h4><p>Czy to, jak działasz, jest dla Ciebie użyteczne?</p></div>
+      <div class="pillar"><div class="pillar-num">2</div><h4>Ekologia</h4><p>Czy nikogo nie krzywdzisz? Czy zmiana nie niszczy czegoś innego?</p></div>
+      <div class="pillar"><div class="pillar-num">3</div><h4>Odpowiedzialność</h4><p>Leży po stronie klienta. Nie coacha.</p></div>
+      <div class="pillar"><div class="pillar-num">4</div><h4>Wpływ</h4><p>Pracujemy tylko nad tym, na co klient ma wpływ.</p></div>
+      <div class="pillar"><div class="pillar-num">5</div><h4>Zasoby</h4><p>Klient ma wszystkie zasoby, by osiągnąć cel.</p></div>
+      <div class="pillar"><div class="pillar-num">6</div><h4>Rozwiązanie</h4><p>Zawsze istnieje. Trzeba je tylko znaleźć.</p></div>
+      <div class="pillar"><div class="pillar-num">7</div><h4>Motywacja</h4><p>Bez niej nie ma zmiany. Pomagamy ją odkryć.</p></div>
+      <div class="pillar"><div class="pillar-num">8</div><h4>Energia</h4><p>Idzie za uwagą — kieruj uwagę na cel.</p></div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Co coach robi inaczej</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Coaching vs. inne metody</h2>
+    </div>
+
+    <div class="comparison-wrap">
+      <div class="comparison-head">
+        <div>Inne metody</div>
+        <div>Coaching</div>
+      </div>
+      <div class="comparison-row">
+        <div><strong>Psychoterapia:</strong> diagnoza i leczenie zaburzeń, praca z przeszłością</div>
+        <div>Praca tu i teraz, z osobami dobrze funkcjonującymi, brak diagnozy</div>
+      </div>
+      <div class="comparison-row">
+        <div><strong>Mentor:</strong> dzieli się ekspertyzą, daje podpowiedzi z własnego doświadczenia</div>
+        <div>Coach nie musi mieć doświadczenia w roli klienta, zadaje pytania</div>
+      </div>
+      <div class="comparison-row">
+        <div><strong>Doradca:</strong> prezentuje rozwiązania, wskazuje konsekwencje i ryzyka</div>
+        <div>Nie sugeruje, klient sam dochodzi do wniosków</div>
+      </div>
+      <div class="comparison-row">
+        <div><strong>Trener / nauczyciel:</strong> przekazuje wiedzę, motywuje, jest dyrektywny</div>
+        <div>Pracuje na posiadanych już umiejętnościach, podąża za klientem</div>
+      </div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Pierwsze odświeżenie</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Quick warm-up: 4 pytania do Ciebie</h2>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-num">?</span>
+        <h3>Jak ostatnio słuchałeś?</h3>
+        <p>Pomyśl o jednej rozmowie z ostatniego tygodnia (z radnym, podwładnym, klientem aptecznym). Czy słuchałeś, by zrozumieć — czy żeby odpowiedzieć?</p>
+      </div>
+      <div class="card">
+        <span class="card-num">?</span>
+        <h3>Kiedy ostatnio dałeś radę zamiast pytania?</h3>
+        <p>Coach nie sugeruje. Łatwo wpaść w tryb doradcy, zwłaszcza gdy „wiemy, jak to zrobić”. Wyłap moment, w którym podpowiadałeś.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">?</span>
+        <h3>Jaki masz cel z tej powtórki?</h3>
+        <p>Czy chcesz wrócić do praktyki? Przygotować się do EIA? Po prostu odświeżyć? Sformułowanie celu daje strukturę dalszej pracy.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">?</span>
+        <h3>Z kim mógłbyś zacząć ćwiczyć?</h3>
+        <p>Akredytacja Foundation Fast Track wymaga 5 klientów / 50 godzin / 12 miesięcy. Może to być kolega z urzędu, znajomy, ktoś z rodziny.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== PANEL 2: COMPETENCIES =========== -->
+  <section class="panel" id="competencies">
+    <div class="section-head">
+      <div class="section-eyebrow">Wskaźniki umiejętności · poziom Foundation</div>
+      <h2 class="section-title">Osiem kompetencji EMCC</h2>
+      <p class="section-desc">Kliknij segment koła, aby zobaczyć wskaźniki umiejętności (capability indicators) na poziomie Foundation. Te indykatory są kluczem do akredytacji EIA Foundation.</p>
+    </div>
+
+    <div class="wheel-wrap">
+      <div>
+        <svg class="wheel-svg" viewBox="0 0 400 400" id="wheel">
+          <!-- segments will be rendered by JS -->
+        </svg>
+      </div>
+      <div class="competency-detail" id="comp-detail">
+        <div class="badge accent" style="margin-bottom:10px;">Wybierz kompetencję</div>
+        <h4>Kliknij na koło →</h4>
+        <p class="lead">Każda z ośmiu kompetencji ma zestaw konkretnych wskaźników umiejętności (CIs). Aby uzyskać akredytację Foundation, nie trzeba spełnić każdego z osobna — chodzi o zasadę równoważności.</p>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top: 32px;">
+      <div class="section-eyebrow">Twoje fundamenty</div>
+      <h2 class="section-title" style="font-size:1.5rem;">5 umiejętności pod budowanie relacji</h2>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6M21 19a2 2 0 0 1-2 2h-1v-7h3v5zM3 19a2 2 0 0 0 2 2h1v-7H3v5z"/></svg>
+        </div>
+        <h3>Aktywne słuchanie</h3>
+        <p>Skupienie na tym, co klient mówi i czego nie mówi. Wsłuchiwanie się w obawy, wartości, przekonania.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Empatia</h3>
+        <p>Zdolność rozumienia map drugiej osoby. Nie znaczy „czuć to samo" — znaczy świadomie kierować uwagę na drugiego.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9-9-4-9-9zM12 8v4M12 16h.01"/></svg>
+        </div>
+        <h3>Odzwierciedlanie</h3>
+        <p>Odbijanie jak w lustrze: słów, gestów, mimiki, tonu, energii, emocji, schematów. Klient widzi siebie.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Parafraza</h3>
+        <p>„Czy dobrze rozumiem, że…?" Swobodna przeróbka wypowiedzi, która zachowuje sens. Sprawdza zrozumienie.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a3 3 0 1 1 4 2.5c-.5.3-1.5.6-1.5 1.5M12 17h.01"/></svg>
+        </div>
+        <h3>Zadawanie pytań</h3>
+        <p>Otwarte, krótkie, czyste — bez sugestii. Pytanie to narzędzie nr 1 coacha.</p>
+      </div>
+      <div class="card" style="background: var(--bg-warm); border-color: var(--accent);">
+        <div class="card-icon" style="background: var(--accent); color: white;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h3>Razem dają zaufanie</h3>
+        <p>Jeśli te 5 elementów działa, klient się otwiera. Bez zaufania coaching nie zadziała.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== PANEL 3: SESSION SIMULATOR =========== -->
+  <section class="panel" id="session">
+    <div class="section-head">
+      <div class="section-eyebrow">Symulator sesji · model GROW</div>
+      <h2 class="section-title">Przeprowadź sesję krok po kroku</h2>
+      <p class="section-desc">Klasyczna struktura GROW (Whitmore): Topic → Goal → Reality → Options → Will. Klikaj kolejne etapy, korzystaj z banku pytań i poniższego skryptu sesji demo.</p>
+    </div>
+
+    <div class="stepper" id="stepper">
+      <button class="step-btn active" data-step="0">
+        <span class="step-letter">T</span>
+        <span class="step-name">Topic</span>
+      </button>
+      <button class="step-btn" data-step="1">
+        <span class="step-letter">G</span>
+        <span class="step-name">Goal</span>
+      </button>
+      <button class="step-btn" data-step="2">
+        <span class="step-letter">R</span>
+        <span class="step-name">Reality</span>
+      </button>
+      <button class="step-btn" data-step="3">
+        <span class="step-letter">O</span>
+        <span class="step-name">Options</span>
+      </button>
+      <button class="step-btn" data-step="4">
+        <span class="step-letter">W</span>
+        <span class="step-name">Will</span>
+      </button>
+      <button class="step-btn" data-step="5">
+        <span class="step-letter">+</span>
+        <span class="step-name">Domknięcie</span>
+      </button>
+    </div>
+
+    <div class="session-canvas" id="session-canvas">
+      <!-- rendered by JS -->
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Demo sesji</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Przykładowy zapis sesji</h2>
+      <p class="section-desc">Realistyczny zapis 30-minutowej sesji coachingowej z fikcyjnym klientem. Tematem jest typowy dla Ciebie obszar — przygotowanie do prezentacji budżetu na sesji rady.</p>
+    </div>
+
+    <div class="demo-toggle">
+      <button class="btn btn-primary" id="show-demo">▸ Pokaż zapis sesji demo</button>
+      <button class="btn" id="hide-demo" style="display:none;">▾ Ukryj</button>
+    </div>
+
+    <div class="demo-script" id="demo-script" style="display:none;"></div>
+  </section>
+
+  <!-- =========== PANEL 4: RAMA CELU =========== -->
+  <section class="panel" id="rama">
+    <div class="section-head">
+      <div class="section-eyebrow">Technika rama celu · 10 pytań</div>
+      <h2 class="section-title">Najprostsza i najmocniejsza struktura</h2>
+      <p class="section-desc">Wykonaj ćwiczenie z karty Norman Benett: poproś rozmówcę, by przypomniał sobie sytuację, z której nie jest zadowolony — i zadaj <strong>dokładnie</strong> te pytania, w tej kolejności, bez dodawania własnych. Po sesji zapytaj: „Co odkryłeś podczas rozmowy?"</p>
+    </div>
+
+    <div class="ramka-grid">
+      <div class="ramka-item"><div class="ramka-num">1</div><div><div class="ramka-q">Czego chcesz w zamian?</div><div class="ramka-purpose">Przekierowanie z problemu na wynik (od „nie chcę" do „chcę")</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">2</div><div><div class="ramka-q">Jak chcesz, żeby było?</div><div class="ramka-purpose">Wizualizacja stanu pożądanego — pozytywne sformułowanie</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">3</div><div><div class="ramka-q">Jaki ma być efekt twojego działania?</div><div class="ramka-purpose">Klaryfikacja konkretnego rezultatu</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">4</div><div><div class="ramka-q">Jakie potrzeby zrealizujesz?</div><div class="ramka-purpose">Dotarcie do warstwy potrzeb pod celem</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">5</div><div><div class="ramka-q">Jakie korzyści osiągniesz?</div><div class="ramka-purpose">Wzmocnienie motywacji</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">6</div><div><div class="ramka-q">Po czym poznasz, że osiągnąłeś cel?</div><div class="ramka-purpose">Mierzalność, kryteria sukcesu</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">7</div><div><div class="ramka-q">Kiedy już osiągniesz cel, co jeszcze zmieni się na lepsze?</div><div class="ramka-purpose">Ekologia + dodatkowe korzyści</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">8</div><div><div class="ramka-q">Jakie Twoje zdolności, umiejętności, zasoby pomogą Ci w osiągnięciu celu?</div><div class="ramka-purpose">Aktywacja zasobów — klient widzi, co już ma</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">9</div><div><div class="ramka-q">Jaki zrobisz pierwszy krok, aby osiągnąć cel?</div><div class="ramka-purpose">Konkretne działanie — nie deklaracja</div></div></div>
+      <div class="ramka-item"><div class="ramka-num">10</div><div><div class="ramka-q">Kiedy to zrobisz? Kiedy zaczniesz? Od czego zaczniesz?</div><div class="ramka-purpose">Osadzenie w czasie + zobowiązanie</div></div></div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Operacjonalizacja celu · 7 kryteriów</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Dobry cel jest…</h2>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card"><span class="card-num">P</span><h3>Precyzyjny i mierzalny</h3><p>Co konkretnie chcesz osiągnąć? Po czym poznasz, że to masz?</p></div>
+      <div class="card"><span class="card-num">C</span><h3>Osadzony w czasie</h3><p>Ile czasu potrzebujesz? Kiedy chcesz go osiągnąć?</p></div>
+      <div class="card"><span class="card-num">R</span><h3>Realny</h3><p>Podaj argumenty świadczące o realizmie. Co już masz, z czego możesz skorzystać?</p></div>
+      <div class="card"><span class="card-num">+</span><h3>Pozytywnie sformułowany</h3><p>Bez zaprzeczeń. „Chcę X" zamiast „nie chcę Y".</p></div>
+      <div class="card"><span class="card-num">↻</span><h3>W zakresie wpływu i kontroli</h3><p>Czy masz na to wpływ? Jak i kiedy będziesz to kontrolować?</p></div>
+      <div class="card"><span class="card-num">≈</span><h3>Ekologiczny</h3><p>Czy służy Tobie i otoczeniu? Czy realizacja celu nie niszczy czegoś innego?</p></div>
+      <div class="card" style="grid-column: span 2; background: var(--bg-warm); border-color: var(--gold);"><span class="card-num">✓</span><h3>Uzgodniony i zapisany</h3><p>Czy zainteresowani wiedzą? Czy akceptują? Cel zapisany jest celem realnym.</p></div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Matryca aktywności · po Bennewiczu</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Gdzie klient teraz jest?</h2>
+      <p class="section-desc">Modyfikacja techniki Miary Celów J. O'Connora. Pomaga zdiagnozować, w którym ćwiartce siedzi klient — a stąd, co powinien rozwijać.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 18px; margin-bottom: 18px; max-width: 600px; margin-left: auto; margin-right: auto;">
+      <div></div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.1em;">
+        <div>Chcę</div><div>Nie chcę</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 18px; max-width: 600px; margin: 0 auto;">
+      <div style="display: grid; grid-template-rows: 1fr 1fr; gap: 12px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.1em;">
+        <div>Mam</div><div>Nie mam</div>
+      </div>
+      <div class="matryca">
+        <div class="matryca-cell stop">
+          <div>
+            <div class="matryca-coords">Mam · Chcę</div>
+            <div class="matryca-label">Stoję</div>
+          </div>
+          <div class="matryca-desc">Mam zasoby, chcę celu — ale nie ruszam. Co mnie blokuje?</div>
+        </div>
+        <div class="matryca-cell brake">
+          <div>
+            <div class="matryca-coords">Mam · Nie chcę</div>
+            <div class="matryca-label">Hamuję</div>
+          </div>
+          <div class="matryca-desc">Mam coś, czego nie chcę. Trzymam się tego — dlaczego?</div>
+        </div>
+        <div class="matryca-cell go">
+          <div>
+            <div class="matryca-coords">Nie mam · Chcę</div>
+            <div class="matryca-label">Idę</div>
+          </div>
+          <div class="matryca-desc">Brakuje mi i chcę zdobyć. Najbardziej naturalna ścieżka rozwoju.</div>
+        </div>
+        <div class="matryca-cell avoid">
+          <div>
+            <div class="matryca-coords">Nie mam · Nie chcę</div>
+            <div class="matryca-label">Unikam</div>
+          </div>
+          <div class="matryca-desc">Czego unikam? Czemu to mi służy lub nie?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== PANEL 5: TECHNIQUES =========== -->
+  <section class="panel" id="techniques">
+    <div class="section-head">
+      <div class="section-eyebrow">Aktywne słuchanie · samocheck</div>
+      <h2 class="section-title">Bariery aktywnego słuchania</h2>
+      <p class="section-desc">Kliknij każdą barierę, którą u siebie zauważasz. To narzędzie z Twojego materiału kursowego — szczerość przed sobą jest pierwszym krokiem.</p>
+    </div>
+
+    <div class="barrier-grid" id="barriers">
+      <div class="barrier" data-id="por">
+        <h5>Porównywanie</h5>
+        <p>Cały czas próbujesz ocenić, kto mądrzejszy, bardziej kompetentny, kto więcej cierpiał.</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+      <div class="barrier" data-id="dom">
+        <h5>Domyślanie się</h5>
+        <p>Czytasz w myślach drugiej osoby, próbujesz zgadnąć, co „naprawdę" myśli.</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+      <div class="barrier" data-id="prz">
+        <h5>Przygotowywanie odpowiedzi</h5>
+        <p>Twój umysł zamiast słuchać pędzi, by ułożyć własną sekwencję.</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+      <div class="barrier" data-id="fil">
+        <h5>Filtrowanie</h5>
+        <p>Słuchanie wybiórcze — gdy temat budzi emocje, „odpływasz".</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+      <div class="barrier" data-id="osa">
+        <h5>Osądzanie</h5>
+        <p>Oceniasz osobę zanim wysłuchasz do końca. Spisujesz na straty i przestajesz słuchać.</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+      <div class="barrier" data-id="sko">
+        <h5>Skojarzenia</h5>
+        <p>Rozmowa uruchamia łańcuch skojarzeń, „odpływasz" do swoich myśli.</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+      <div class="barrier" data-id="uto">
+        <h5>Utożsamianie się</h5>
+        <p>Cokolwiek mówi rozmówca, odnosisz do siebie i swoich doświadczeń.</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+      <div class="barrier" data-id="rad">
+        <h5>Doradzanie</h5>
+        <p>Już po pierwszych zdaniach masz „świetne rozwiązanie" i zaczynasz go pchać.</p>
+        <div class="barrier-flag">⚑ flagowane</div>
+      </div>
+    </div>
+
+    <div class="listen-result" id="barriers-result" style="display:none;">
+      <strong>Twoje obszary do pracy: <span id="barriers-count">0</span></strong>
+      <p style="margin-top:6px;">Wybierz jedną z flagowanych barier i przez tydzień świadomie ćwicz jej przeciwieństwo w codziennych rozmowach. Wracaj tutaj co kilka dni.</p>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">10 zasad dobrego słuchania</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Z Twoich materiałów</h2>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card"><span class="card-num">1</span><h3>Nie przerywaj rozmówcy</h3><p>Nawet jeśli już wiesz, co chcesz powiedzieć — czekaj.</p></div>
+      <div class="card"><span class="card-num">2</span><h3>Stwarzaj dobry klimat</h3><p>Rozmówca nie powinien czuć się skrępowany.</p></div>
+      <div class="card"><span class="card-num">3</span><h3>Bądź cierpliwy i opanowany</h3><p>Spokój coacha to spokój klienta.</p></div>
+      <div class="card"><span class="card-num">4</span><h3>Okazuj zainteresowanie</h3><p>Postawą, mimiką, oczami — nie tylko słowami.</p></div>
+      <div class="card"><span class="card-num">5</span><h3>Koncentruj się tylko na mówiącym</h3><p>Bez przeglądania dokumentów, zegarka, telefonu.</p></div>
+      <div class="card"><span class="card-num">6</span><h3>Zadawaj dodatkowe pytania</h3><p>Pokazuje, że słuchasz i chcesz zrozumieć głębiej.</p></div>
+      <div class="card"><span class="card-num">7</span><h3>Posługuj się językiem rozmówcy</h3><p>Nie własnym żargonem. Dopasowuj słownictwo.</p></div>
+      <div class="card"><span class="card-num">8</span><h3>Upewniaj się, że rozumiesz</h3><p>Parafraza, „Czy dobrze rozumiem, że…?".</p></div>
+      <div class="card"><span class="card-num">9</span><h3>Skupiaj się na najważniejszym</h3><p>Notuj kluczowe słowa, nie wszystko.</p></div>
+      <div class="card"><span class="card-num">10</span><h3>Stosuj potwierdzenia niewerbalne</h3><p>Mimika, gesty, postawa, uśmiech.</p></div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Po co techniki w przestrzeni</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Dlaczego pracujemy ciałem</h2>
+      <p class="section-desc">Z Twojego materiału kursowego: zapamiętujemy 10% tego, co czytamy, ale aż 90% tego, co sami robimy. Dlatego coaching nie zostaje na słowach.</p>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card" style="text-align:center;"><div style="font-family:'Fraunces',serif; font-size:3rem; color:var(--accent); font-weight:300; line-height:1;">10%</div><h3 style="font-size:1rem; margin-top:8px;">Czytamy</h3></div>
+      <div class="card" style="text-align:center;"><div style="font-family:'Fraunces',serif; font-size:3rem; color:var(--accent); font-weight:300; line-height:1;">20%</div><h3 style="font-size:1rem; margin-top:8px;">Słyszymy</h3></div>
+      <div class="card" style="text-align:center;"><div style="font-family:'Fraunces',serif; font-size:3rem; color:var(--accent); font-weight:300; line-height:1;">30%</div><h3 style="font-size:1rem; margin-top:8px;">Widzimy</h3></div>
+      <div class="card" style="text-align:center;"><div style="font-family:'Fraunces',serif; font-size:3rem; color:var(--accent); font-weight:300; line-height:1;">50%</div><h3 style="font-size:1rem; margin-top:8px;">Słyszymy + widzimy</h3></div>
+      <div class="card" style="text-align:center;"><div style="font-family:'Fraunces',serif; font-size:3rem; color:var(--accent); font-weight:300; line-height:1;">70%</div><h3 style="font-size:1rem; margin-top:8px;">Sami mówimy</h3></div>
+      <div class="card" style="text-align:center; background: var(--bg-warm); border-color: var(--accent);"><div style="font-family:'Fraunces',serif; font-size:3rem; color:var(--accent); font-weight:300; line-height:1;">90%</div><h3 style="font-size:1rem; margin-top:8px;">Sami robimy</h3></div>
+    </div>
+  </section>
+
+  <!-- =========== PANEL 6: ACCREDITATION =========== -->
+  <section class="panel" id="accreditation">
+    <div class="section-head">
+      <div class="section-eyebrow">EMCC EIA Foundation · Fast Track</div>
+      <h2 class="section-title">7 kroków do akredytacji</h2>
+      <p class="section-desc">Ścieżka opracowana przez asesorów EMCC: Kalinę Grelę-Łężak i Roberta Łężak. Klikaj kroki, gdy zaczniesz je realizować — checklisty mają charakter informacyjny i zerują się przy odświeżeniu strony.</p>
+    </div>
+
+    <div class="checklist" id="acc-checklist">
+      <div class="check-item" data-id="acc1">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Min. 5 klientów</strong><small>Pełne procesy coachingowe — 4–10 sesji z każdym z 5 klientów w ciągu roku praktyki</small></div>
+        <div class="check-target">≥ 5 klientów / rok</div>
+      </div>
+      <div class="check-item" data-id="acc2">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>50 godzin coachingu</strong><small>Notuj sesje w specjalnym formularzu EMCC (data, klient, godziny, tematy, techniki)</small></div>
+        <div class="check-target">≥ 50 h / rok</div>
+      </div>
+      <div class="check-item" data-id="acc3">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>5 rekomendacji klientów</strong><small>Klienci wypełniają wzór EMCC (otrzymasz formularz po zgłoszeniu)</small></div>
+        <div class="check-target">≥ 5 rekom.</div>
+      </div>
+      <div class="check-item" data-id="acc4">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>16 godzin CPD</strong><small>Continuing Professional Development — webinary, konferencje, szkolenia, warsztaty</small></div>
+        <div class="check-target">≥ 16 h / rok</div>
+      </div>
+      <div class="check-item" data-id="acc5">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>4 godziny superwizji</strong><small>Min. 1 godzina superwizji na kwartał z superwizorem (uzyskaj zaświadczenie)</small></div>
+        <div class="check-target">≥ 1 h / kwartał</div>
+      </div>
+      <div class="check-item" data-id="acc6">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>5 wpisów Reflective Log</strong><small>Refleksje na temat zmian, które obserwujesz w sobie jako coachu (wzór EMCC)</small></div>
+        <div class="check-target">≥ 5 wpisów</div>
+      </div>
+      <div class="check-item" data-id="acc7">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Członkostwo EMCC Poland</strong><small>emccpoland.org — wypełnij formularz, dokonaj opłaty członkowskiej</small></div>
+        <div class="check-target">opłata roczna</div>
+      </div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Poziomy akredytacji</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Cztery poziomy EMCC</h2>
+    </div>
+
+    <div class="comparison-wrap">
+      <div class="comparison-head" style="grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;">
+        <div style="background: var(--bg-warm); color: var(--ink-soft);">Wymóg</div>
+        <div>Foundation</div>
+        <div style="background: var(--ink-soft); color: var(--bg-cream);">Practitioner</div>
+        <div style="background: var(--ink-soft); color: var(--bg-cream);">Senior</div>
+        <div style="background: var(--ink-soft); color: var(--bg-cream);">Master</div>
+      </div>
+      <div class="comparison-row" style="grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;">
+        <div>Doświadczenie</div><div>1 rok</div><div>3 lata</div><div>5 lat</div><div>7 lat</div>
+      </div>
+      <div class="comparison-row" style="grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;">
+        <div>Godziny z klientem</div><div>50 h</div><div>100 h</div><div>250 h</div><div>500 h</div>
+      </div>
+      <div class="comparison-row" style="grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;">
+        <div>Liczba klientów</div><div>5</div><div>10</div><div>20</div><div>40</div>
+      </div>
+      <div class="comparison-row" style="grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;">
+        <div>CPD rocznie</div><div>16 h</div><div>16 h</div><div>32 h</div><div>48 h</div>
+      </div>
+      <div class="comparison-row" style="grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;">
+        <div>Superwizja</div><div>1 h/kw.</div><div>1 h/kw.</div><div>1 h / 35 h</div><div>1 h / 35 h</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========== PANEL 7: RESOURCES =========== -->
+  <section class="panel" id="resources">
+    <div class="section-head">
+      <div class="section-eyebrow">Materiały zewnętrzne</div>
+      <h2 class="section-title">Co warto przeczytać i obejrzeć</h2>
+      <p class="section-desc">Lektury i źródła uporządkowujące wiedzę poza Twoimi materiałami z kursu Norman Benett — w kolejności od najpilniejszych dla odświeżenia.</p>
+    </div>
+
+    <div class="resource-list">
+      <a class="resource" href="https://www.emccglobal.org/leadership-development/competences/" target="_blank" rel="noopener">
+        <span class="resource-tag">EMCC Global</span>
+        <div>
+          <div class="resource-title">Professional Practice Framework — wskaźniki kompetencji</div>
+          <div class="resource-desc">Aktualna wersja 8 kompetencji z zaktualizowanymi capability indicators na 4 poziomach</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource" href="https://www.emccglobal.org/wp-content/uploads/2018/10/EMCC-competences-framework-v2-EN.pdf" target="_blank" rel="noopener">
+        <span class="resource-tag">PDF · EN</span>
+        <div>
+          <div class="resource-title">EMCC Competence Framework v2 (PDF)</div>
+          <div class="resource-desc">Pełny dokument źródłowy z opisem wszystkich CIs — odpowiednik tabel, które masz w polskich materiałach</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource" href="https://emccpoland.org" target="_blank" rel="noopener">
+        <span class="resource-tag">EMCC PL</span>
+        <div>
+          <div class="resource-title">EMCC Poland — aplikacja do akredytacji</div>
+          <div class="resource-desc">Polski oddział, formularze, kontakty z asesorami, członkostwo</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource" href="https://www.thecoachingtoolscompany.com/grow-model-coaching-questions/" target="_blank" rel="noopener">
+        <span class="resource-tag">Praktyka</span>
+        <div>
+          <div class="resource-title">79+ pytań GROW — biblioteka pytań coachingowych</div>
+          <div class="resource-desc">Po angielsku, ale to najlepsza pojedyncza lista pytań GROW dostępna online — warto przejrzeć przed sesją</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource" href="https://coachingfederation.org/wp-content/uploads/2024/09/icf-res-development-of-a-coaching-competency-framework-2024.09.21.pdf" target="_blank" rel="noopener">
+        <span class="resource-tag">ICF 2024</span>
+        <div>
+          <div class="resource-title">ICF — Development of Coaching Competency Framework (2024)</div>
+          <div class="resource-desc">Najnowszy raport ICF — pokazuje, gdzie zbiega się myślenie EMCC i ICF (oba podejścia mają wspólny rdzeń)</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource" href="https://www.iccs.co/an-outline-of-the-emcc-supervision-competence-framework/" target="_blank" rel="noopener">
+        <span class="resource-tag">Superwizja</span>
+        <div>
+          <div class="resource-title">EMCC Supervision Competence Framework — opis</div>
+          <div class="resource-desc">Trzy funkcje superwizji wg Hawkinsa & Smitha: developmental, resourcing, qualitative — kluczowe, jeśli będziesz korzystał z superwizji do akredytacji</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Książki — fundament biblioteki coacha</div>
+      <h2 class="section-title" style="font-size:1.5rem;">Klasyki, do których warto wrócić</h2>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-num">📖</span>
+        <h3>Coaching for Performance — John Whitmore</h3>
+        <p>Autor modelu GROW. Klasyka, którą warto przeczytać przynajmniej raz, nawet jeśli już znasz strukturę. Wydanie 5. (Nicholas Brealey).</p>
+      </div>
+      <div class="card">
+        <span class="card-num">📖</span>
+        <h3>Coaching i mentoring w praktyce — Maciej Bennewicz</h3>
+        <p>Polski podręcznik, z którego pochodzi m.in. Matryca Aktywności i wiele technik z Twojego kursu. Idealny do utrwalenia.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">📖</span>
+        <h3>Coaching — Joseph O'Connor &amp; Andrea Lages</h3>
+        <p>O'Connor jest współtwórcą filozofii coachingu Norman Benett. Zwięzła, mocna baza technik partnerskich.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">📖</span>
+        <h3>The Inner Game of Tennis — Timothy Gallwey</h3>
+        <p>Prekursor coachingu. Cienka książka, ale fundament: gra wewnętrzna vs. zewnętrzna. Czyta się w jeden wieczór.</p>
+      </div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Plan tygodniowej powtórki — sugestia</div>
+      <h2 class="section-title" style="font-size:1.5rem;">7 dni, żeby wrócić do formy</h2>
+    </div>
+
+    <div class="checklist">
+      <div class="check-item" data-id="day1">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Dzień 1 · Definicje i 8 filarów</strong><small>Przejrzyj zakładkę Podstawy. Zapisz w notatniku swoją odpowiedź na 4 pytania warm-up.</small></div>
+        <div class="check-target">~30 min</div>
+      </div>
+      <div class="check-item" data-id="day2">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Dzień 2 · 8 kompetencji EMCC</strong><small>Przeklikaj koło. Dla każdej kompetencji zapisz 1 zachowanie, którego chciałbyś próbować.</small></div>
+        <div class="check-target">~45 min</div>
+      </div>
+      <div class="check-item" data-id="day3">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Dzień 3 · Aktywne słuchanie</strong><small>Wypełnij samocheck barier słuchania. Wybierz 1 do pracy na resztę tygodnia.</small></div>
+        <div class="check-target">~20 min</div>
+      </div>
+      <div class="check-item" data-id="day4">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Dzień 4 · Rama Celu — sam ze sobą</strong><small>Wybierz własną sytuację, którą chciałbyś zmienić. Przejdź przez 10 pytań ramy celu, zapisując odpowiedzi.</small></div>
+        <div class="check-target">~40 min</div>
+      </div>
+      <div class="check-item" data-id="day5">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Dzień 5 · Symulator GROW + demo</strong><small>Przejdź przez wszystkie 6 etapów. Przeczytaj zapis sesji demo. Odznacz, co rezonuje.</small></div>
+        <div class="check-target">~50 min</div>
+      </div>
+      <div class="check-item" data-id="day6">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Dzień 6 · Realna sesja praktyczna</strong><small>Poproś znajomego o 30 minut. Przeprowadź sesję na ramie celu. Zapytaj na koniec: „Co odkryłeś?"</small></div>
+        <div class="check-target">45 min</div>
+      </div>
+      <div class="check-item" data-id="day7">
+        <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="check-text"><strong>Dzień 7 · Decyzja o akredytacji</strong><small>Przejrzyj zakładkę Akredytacja. Zdecyduj: czy idziesz po EIA Foundation? Jeśli tak — odznacz pierwszy krok i napisz do EMCC PL.</small></div>
+        <div class="check-target">~30 min + decyzja</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Dashboard zbudowany na podstawie materiałów Norman Benett (Coaching Foundation) + EMCC Global · Refresh 2026
+  </footer>
+</div>
+
+<script>
+  /* ============ TAB SWITCHING ============ */
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.panel;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* ============ COMPETENCY WHEEL ============ */
+  const competencies = [
+    {
+      id: 0, name: 'Samoświadomość',
+      lead: 'Świadomość własnych wartości, przekonań i zachowań — i tego, jak wpływają one na pracę z klientem.',
+      indicators: [
+        'Działanie w sposób umożliwiający proces coachingu',
+        'Radzenie sobie z kwestiami różnorodności w praktyce',
+        'Opisywanie własnych wartości, przekonań i postaw',
+        'Postępowanie zgodnie z własnymi wartościami i przekonaniami'
+      ]
+    },
+    {
+      id: 1, name: 'Zaangażowanie w samodoskonalenie',
+      lead: 'Zgłębianie i doskonalenie standardów pracy, dbanie o reputację zawodu.',
+      indicators: [
+        'Stosowanie i ocenianie własnych umiejętności coachingowych',
+        'Regularne uczestnictwo w superwizji',
+        'Refleksja nad praktyką (Reflective Log)',
+        'Przynależność do organizacji zawodowych (np. EMCC)'
+      ]
+    },
+    {
+      id: 2, name: 'Zarządzanie kontraktem',
+      lead: 'Określanie oczekiwań i granic kontraktu — z klientem i ewentualnym sponsorem.',
+      indicators: [
+        'Wyjaśnianie swojej roli w relacji z klientem',
+        'Wyjaśnianie korzyści płynących z coachingu',
+        'Ustalanie odpowiedniego stopnia poufności',
+        'Zarządzanie wnioskami wyciągniętymi z rozmowy'
+      ]
+    },
+    {
+      id: 3, name: 'Budowanie relacji',
+      lead: 'Umiejętne budowanie i podtrzymywanie relacji opartej na zaufaniu i bezpieczeństwie.',
+      indicators: [
+        'Wyjaśnianie wpływu własnego zachowania na proces',
+        'Traktowanie klienta z szacunkiem, nienaruszanie godności',
+        'Stosowanie metody budowania dobrych relacji',
+        'Używanie odpowiedniego języka, dopasowanego do klienta',
+        'Budowanie zaufania przez ciągłe zaangażowanie i nieosądzanie'
+      ]
+    },
+    {
+      id: 4, name: 'Umożliwienie wglądu i nauki',
+      lead: 'Pracowanie z klientem nad pogłębianiem wglądu i wiedzy o sobie.',
+      indicators: [
+        'Przekonanie o pomaganiu innym w rozwoju',
+        'Założenie, że człowiek najlepiej uczy się sam',
+        'Aktywne słuchanie',
+        'Wyjaśnianie zasad stawiania pytań i co najmniej jednej struktury',
+        'Przedstawianie informacji zwrotnej w odpowiedni sposób',
+        'Służenie radą tylko w odpowiednich momentach'
+      ]
+    },
+    {
+      id: 5, name: 'Orientacja na wynik i działanie',
+      lead: 'Wsparcie klienta w dokonywaniu pożądanych zmian — od celu do działania.',
+      indicators: [
+        'Pomoc w wyjaśnieniu i przeanalizowaniu pożądanych rezultatów',
+        'Ustalenie odpowiednich celów (operacjonalizacja)',
+        'Zapewnienie przystawalności celów do kontekstu',
+        'Badanie szeregu możliwości',
+        'Upewnianie się, że klient sam wybiera rozwiązania',
+        'Analizowanie postępów'
+      ]
+    },
+    {
+      id: 6, name: 'Stosowanie modeli i technik',
+      lead: 'Wykorzystywanie modeli, narzędzi i technik wykraczających poza podstawową komunikację.',
+      indicators: [
+        'Oparcie podejścia na uznanym modelu coachingu (np. GROW)',
+        'Stosowanie ramy celu, matrycy aktywności, odzwierciedlania',
+        'Świadome wybieranie technik dopasowanych do klienta'
+      ]
+    },
+    {
+      id: 7, name: 'Ewaluacja',
+      lead: 'Gromadzenie informacji o skuteczności własnej praktyki — i przyczynianie się do kultury oceny.',
+      indicators: [
+        'Ocenianie rezultatów wraz z klientem',
+        'Monitorowanie i analizowanie skuteczności procesu',
+        'Proszenie klienta o informację zwrotną',
+        'Przyjmowanie i akceptowanie informacji zwrotnej'
+      ]
+    }
+  ];
+
+  function renderWheel() {
+    const svg = document.getElementById('wheel');
+    const cx = 200, cy = 200, rOut = 180, rIn = 90;
+    const total = competencies.length;
+    const colors = ['#f0e4cc', '#ecdab4', '#e8cfa0', '#e3c48d', '#dfb97a', '#dbae67', '#d6a354', '#d29841'];
+
+    // outer ring background
+    svg.innerHTML = '';
+
+    competencies.forEach((c, i) => {
+      const startAngle = (i / total) * 2 * Math.PI - Math.PI / 2;
+      const endAngle = ((i + 1) / total) * 2 * Math.PI - Math.PI / 2;
+      const x1 = cx + rOut * Math.cos(startAngle);
+      const y1 = cy + rOut * Math.sin(startAngle);
+      const x2 = cx + rOut * Math.cos(endAngle);
+      const y2 = cy + rOut * Math.sin(endAngle);
+      const x3 = cx + rIn * Math.cos(endAngle);
+      const y3 = cy + rIn * Math.sin(endAngle);
+      const x4 = cx + rIn * Math.cos(startAngle);
+      const y4 = cy + rIn * Math.sin(startAngle);
+      const path = `M ${x1} ${y1} A ${rOut} ${rOut} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${rIn} ${rIn} 0 0 0 ${x4} ${y4} Z`;
+
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.classList.add('wheel-segment');
+      g.setAttribute('data-id', c.id);
+
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', path);
+      p.setAttribute('fill', colors[i]);
+      p.setAttribute('stroke', '#fbf8f2');
+      p.setAttribute('stroke-width', '2');
+      g.appendChild(p);
+
+      // label
+      const midAngle = (startAngle + endAngle) / 2;
+      const tr = (rOut + rIn) / 2;
+      const tx = cx + tr * Math.cos(midAngle);
+      const ty = cy + tr * Math.sin(midAngle);
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x', tx);
+      t.setAttribute('y', ty);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('dominant-baseline', 'middle');
+      t.setAttribute('font-size', '11');
+      t.setAttribute('font-family', 'Inter Tight, sans-serif');
+      t.setAttribute('fill', '#1a1814');
+      t.setAttribute('font-weight', '500');
+
+      // wrap text into 2 lines if > 14 chars
+      const name = c.name;
+      if (name.length > 14) {
+        const words = name.split(' ');
+        const mid = Math.ceil(words.length / 2);
+        const line1 = words.slice(0, mid).join(' ');
+        const line2 = words.slice(mid).join(' ');
+        const tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+        tspan1.setAttribute('x', tx); tspan1.setAttribute('dy', '-0.5em');
+        tspan1.textContent = line1;
+        const tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+        tspan2.setAttribute('x', tx); tspan2.setAttribute('dy', '1.1em');
+        tspan2.textContent = line2;
+        t.appendChild(tspan1); t.appendChild(tspan2);
+      } else {
+        t.textContent = name;
+      }
+      g.appendChild(t);
+      svg.appendChild(g);
+    });
+
+    // center
+    const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    centerCircle.setAttribute('cx', cx); centerCircle.setAttribute('cy', cy);
+    centerCircle.setAttribute('r', rIn - 4);
+    centerCircle.setAttribute('fill', '#fbf8f2');
+    centerCircle.setAttribute('stroke', '#d9d1c2');
+    svg.appendChild(centerCircle);
+
+    const centerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    centerText.setAttribute('x', cx); centerText.setAttribute('y', cy - 6);
+    centerText.setAttribute('text-anchor', 'middle');
+    centerText.setAttribute('font-family', 'Fraunces, serif');
+    centerText.setAttribute('font-size', '20');
+    centerText.setAttribute('fill', '#1a1814');
+    centerText.textContent = 'EMCC';
+    svg.appendChild(centerText);
+
+    const centerSub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    centerSub.setAttribute('x', cx); centerSub.setAttribute('y', cy + 14);
+    centerSub.setAttribute('text-anchor', 'middle');
+    centerSub.setAttribute('font-family', 'JetBrains Mono, monospace');
+    centerSub.setAttribute('font-size', '9');
+    centerSub.setAttribute('letter-spacing', '0.15em');
+    centerSub.setAttribute('fill', '#8a8378');
+    centerSub.textContent = '8 KOMPETENCJI';
+    svg.appendChild(centerSub);
+
+    // attach handlers
+    document.querySelectorAll('.wheel-segment').forEach(seg => {
+      seg.addEventListener('click', () => {
+        document.querySelectorAll('.wheel-segment').forEach(s => s.classList.remove('active'));
+        seg.classList.add('active');
+        const id = parseInt(seg.dataset.id);
+        showCompetency(id);
+      });
+    });
+  }
+
+  function showCompetency(id) {
+    const c = competencies[id];
+    const detail = document.getElementById('comp-detail');
+    detail.innerHTML = `
+      <div class="badge accent" style="margin-bottom:10px;">Kompetencja ${id + 1} z 8 · Foundation</div>
+      <h4>${c.name}</h4>
+      <p class="lead">${c.lead}</p>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:10px;">Wskaźniki umiejętności</div>
+      <ul class="indicator-list">
+        ${c.indicators.map(i => `<li>${i}</li>`).join('')}
+      </ul>
+    `;
+  }
+
+  renderWheel();
+
+  /* ============ SESSION SIMULATOR ============ */
+  const stages = [
+    {
+      letter: 'T', name: 'Topic — Temat',
+      purpose: 'Ustal, o czym będziecie rozmawiać. Dobrze, jeśli zacznie od szerszego pola, a potem zawężycie.',
+      questions: [
+        'O czym chciałbyś dziś porozmawiać?',
+        'Co najbardziej zajmuje Twoją głowę w ostatnim czasie?',
+        'Jaki obszar Twojego życia/pracy potrzebuje teraz uwagi?',
+        'Z czym dziś przychodzisz?'
+      ],
+      tip: 'Jeśli klient jest rozproszony, daj mu chwilę. Topic nie musi być od razu sprecyzowany — często wyłania się dopiero z rozmowy.'
+    },
+    {
+      letter: 'G', name: 'Goal — Cel',
+      purpose: 'Sformułujcie konkretny cel TEJ sesji (nie cel ogólnożyciowy). Co klient chce mieć po 45 minutach?',
+      questions: [
+        'Co chciałbyś osiągnąć w ciągu tej rozmowy?',
+        'Po czym poznasz, że ta sesja była dla Ciebie wartościowa?',
+        'Jaki konkretny rezultat chcesz mieć na koniec?',
+        'Z czym chcesz wyjść z tej sesji?',
+        'Jak chciałbyś, żeby było — w najlepszym scenariuszu?'
+      ],
+      tip: 'Sprawdź cel pod kątem 7 kryteriów (zakładka Rama Celu): pozytywny, mierzalny, w zakresie wpływu, ekologiczny. Często to już jest sesja sama w sobie.'
+    },
+    {
+      letter: 'R', name: 'Reality — Rzeczywistość',
+      purpose: 'Razem z klientem przyjrzyjcie się sytuacji obecnej. Bez ocen, bez sugestii — tylko obraz tego, co jest.',
+      questions: [
+        'Co dzieje się teraz w tym obszarze?',
+        'Co już próbowałeś?',
+        'Co działa, a co nie?',
+        'Kto jeszcze jest w tej sytuacji?',
+        'Co konkretnie się dzieje, gdy…?',
+        'Gdzie teraz jesteś w skali 1–10? Co sprawia, że jest to akurat to miejsce?',
+        'Jakie zasoby już masz?'
+      ],
+      tip: 'To etap, w którym najłatwiej wpaść w pułapkę osądzania, doradzania, utożsamiania się. Wracaj do roli — ty zadajesz pytania, nie znajdujesz odpowiedzi.'
+    },
+    {
+      letter: 'O', name: 'Options — Opcje',
+      purpose: 'Otwórzcie pole możliwości. Generujcie pomysły bez oceny — najpierw ilość, potem jakość.',
+      questions: [
+        'Jakie masz opcje?',
+        'Co mógłbyś zrobić — nawet gdyby to brzmiało dziwnie?',
+        'Gdybyś miał nieograniczone zasoby, co byś zrobił?',
+        'Co zrobiłaby osoba, którą podziwiasz?',
+        'Co jeszcze? A co jeszcze?',
+        'Gdyby ten problem nie istniał, co byłoby możliwe?',
+        'Jakie są plusy i minusy każdej opcji?'
+      ],
+      tip: 'Pytanie „A co jeszcze?" — powtarzane spokojnie 3–4 razy — jest złotem coacha. Pierwsze odpowiedzi są zawsze powierzchowne.'
+    },
+    {
+      letter: 'W', name: 'Will — Zobowiązanie',
+      purpose: 'Klient wybiera konkretne działanie i bierze za nie odpowiedzialność. Bez tego sesja jest niedokończona.',
+      questions: [
+        'Co konkretnie zrobisz?',
+        'Kiedy to zrobisz?',
+        'Co będzie pierwszym krokiem?',
+        'W skali 1–10 — jak bardzo jesteś zaangażowany w to zobowiązanie?',
+        'Czego potrzebujesz, żeby to zrobić?',
+        'Co może Cię zatrzymać? Jak sobie z tym poradzisz?',
+        'Komu o tym powiesz, żeby było realne?'
+      ],
+      tip: 'Jeśli zaangażowanie poniżej 7/10 — pracuj z tym. Pytaj: „Co musiałoby się zmienić, żeby było 9?" Albo: „Mniejszy krok, na który jesteś gotów na 9/10?"'
+    },
+    {
+      letter: '+', name: 'Domknięcie',
+      purpose: 'Klient podsumowuje. Bierze sesję ze sobą. Coach pyta o własną rolę i feedback.',
+      questions: [
+        'Co odkryłeś podczas tej rozmowy?',
+        'Co zabierasz ze sobą z tej sesji?',
+        'Co było dla Ciebie najważniejsze?',
+        'Jak teraz się czujesz w stosunku do tematu?',
+        'Co ze mnie jako coacha było pomocne, a co mogło być inne?',
+        'Kiedy się następnym razem widzimy?'
+      ],
+      tip: 'Pytanie „Co odkryłeś?" jest sygnałowe — pochodzi wprost z karty Norman Benett. Daje klientowi przestrzeń na własną syntezę.'
+    }
+  ];
+
+  function renderStage(idx) {
+    const s = stages[idx];
+    const canvas = document.getElementById('session-canvas');
+    canvas.innerHTML = `
+      <div class="session-stage">
+        <div class="stage-info">
+          <div class="badge accent" style="margin-bottom:10px;">Etap ${idx + 1} z 6</div>
+          <h3>${s.letter} · ${s.name}</h3>
+          <p class="stage-purpose">${s.purpose}</p>
+          <div class="stage-tip">
+            <strong>Wskazówka coacha</strong>
+            <p>${s.tip}</p>
+          </div>
+        </div>
+        <div class="question-bank">
+          <h5>Bank pytań — wybierz lub zainspiruj się</h5>
+          ${s.questions.map(q => `<div class="question">${q}</div>`).join('')}
+        </div>
+      </div>
+      <div class="nav-controls">
+        <button class="btn" id="prev-step" ${idx === 0 ? 'disabled style="opacity:0.4;"' : ''}>← Poprzedni etap</button>
+        <button class="btn btn-primary" id="next-step" ${idx === 5 ? 'disabled style="opacity:0.4;"' : ''}>${idx === 5 ? 'Koniec sesji ✓' : 'Następny etap →'}</button>
+      </div>
+    `;
+    if (idx > 0) document.getElementById('prev-step').addEventListener('click', () => goToStep(idx - 1));
+    if (idx < 5) document.getElementById('next-step').addEventListener('click', () => goToStep(idx + 1));
+  }
+
+  function goToStep(idx) {
+    document.querySelectorAll('.step-btn').forEach((b, i) => {
+      b.classList.remove('active');
+      if (i < idx) b.classList.add('completed');
+      else b.classList.remove('completed');
+    });
+    document.querySelectorAll('.step-btn')[idx].classList.add('active');
+    renderStage(idx);
+  }
+
+  document.querySelectorAll('.step-btn').forEach((btn, i) => {
+    btn.addEventListener('click', () => goToStep(i));
+  });
+
+  renderStage(0);
+
+  /* ============ DEMO SCRIPT ============ */
+  const demoScript = `<div class="stage-marker">▸ Kontekst sesji</div>
+Klient: Marta, kierowniczka działu finansowego w urzędzie miejskim
+Tematyka: za tydzień prezentacja rocznego budżetu na sesji rady
+Czas: 30 min · Miejsce: gabinet, drzwi zamknięte
+
+<div class="stage-marker">▸ T — Topic [0:00–2:00]</div>
+<span class="actor">Coach:</span> O czym chciałabyś dziś porozmawiać?
+<span class="actor">Marta:</span> Mam za tydzień prezentację budżetu. Stresuje mnie. Wiem, że kilku radnych będzie szukało dziury w całym.
+<span class="actor">Coach:</span> Stresuje. <span class="technique">[echo]</span>
+<span class="actor">Marta:</span> Tak. Zwłaszcza punkt o oczyszczalni — wiem, że pójdą po mnie.
+
+<div class="stage-marker">▸ G — Goal [2:00–6:00]</div>
+<span class="actor">Coach:</span> Co chciałabyś osiągnąć w ciągu tej rozmowy?
+<span class="actor">Marta:</span> Hm… żeby przestać się tym tak męczyć. Żebym czuła, że jestem gotowa.
+<span class="actor">Coach:</span> Po czym konkretnie poznasz, że jesteś gotowa? <span class="technique">[mierzalność celu]</span>
+<span class="actor">Marta:</span> Że umiem odpowiedzieć na trzy najtrudniejsze pytania, których się boję.
+<span class="actor">Coach:</span> Czyli celem tej sesji jest… <span class="technique">[parafraza]</span>
+<span class="actor">Marta:</span> …przygotować odpowiedzi na trzy konkretne pytania, których się najbardziej boję.
+<span class="actor">Coach:</span> Czy to coś, co po dzisiejszej rozmowie chciałabyś mieć?
+<span class="actor">Marta:</span> Tak. To by mi naprawdę dało spokój.
+
+<div class="stage-marker">▸ R — Reality [6:00–14:00]</div>
+<span class="actor">Coach:</span> Jakie to są te trzy pytania?
+<span class="actor">Marta:</span> Pierwsze — dlaczego rozbieżność w danych Skałów między 2026 a 2027. Drugie — czemu zwiększamy rezerwę kryzysową przy spadającym dochodzie. Trzecie — najgorsze — dlaczego nie zaproponowaliśmy przetargu na wcześniejszy etap basenu.
+<span class="actor">Coach:</span> Gdy mówisz „najgorsze" — co czujesz? <span class="technique">[odzwierciedlanie emocji]</span>
+<span class="actor">Marta:</span> Ścisk w żołądku. Bo nie mam dobrej odpowiedzi.
+<span class="actor">Coach:</span> Co już zrobiłaś, żeby się przygotować?
+<span class="actor">Marta:</span> Przejrzałam materiały, mam liczby. Po prostu nie ułożyłam jeszcze narracji. Czuję, że chowam się za tabelą.
+<span class="actor">Coach:</span> Co jest dla Ciebie ważne w tym, jak się będziesz prezentować? <span class="technique">[wartości]</span>
+<span class="actor">Marta:</span> Żeby radni czuli, że mogą mi zaufać. Że nie kręcę.
+<span class="actor">Coach:</span> Czyli zaufanie. <span class="technique">[echo]</span> A gdzie teraz jesteś z tym zaufaniem do siebie — w skali 1–10?
+<span class="actor">Marta:</span> Czwórka. Może piątka.
+
+<div class="stage-marker">▸ O — Options [14:00–22:00]</div>
+<span class="actor">Coach:</span> Jakie masz opcje, żeby przygotować odpowiedzi na te trzy pytania?
+<span class="actor">Marta:</span> Mogę usiąść z Tymoteuszem od oczyszczalni. Mogę przejrzeć protokoły zeszłorocznych sesji rady — sprawdzić, jak inni radzili sobie z podobnymi pytaniami. Mogę poprosić mojego szefa o feedback.
+<span class="actor">Coach:</span> Co jeszcze?
+<span class="actor">Marta:</span> Mogę… nagrać siebie odpowiadającą na te pytania i posłuchać.
+<span class="actor">Coach:</span> A co jeszcze? <span class="technique">[trzecie pytanie - złoto]</span>
+<span class="actor">Marta:</span> [pauza] Mogłabym zrobić rehearsal z koleżanką, która siada w roli „złego" radnego.
+<span class="actor">Coach:</span> A co jeszcze?
+<span class="actor">Marta:</span> [śmieje się] Mogłabym po prostu na początku prezentacji powiedzieć szczerze, że trzy rzeczy są niedoskonałe i że właśnie chcę o nich z radą porozmawiać.
+<span class="actor">Coach:</span> Co czujesz, kiedy to mówisz?
+<span class="actor">Marta:</span> Ulga. Naprawdę dużą ulgę.
+
+<div class="stage-marker">▸ W — Will [22:00–28:00]</div>
+<span class="actor">Coach:</span> Z tych opcji — co konkretnie zrobisz?
+<span class="actor">Marta:</span> Jutro rano spotkanie z Tymoteuszem. W środę rehearsal z Anią. A na początku prezentacji powiem o trzech wątpliwościach.
+<span class="actor">Coach:</span> Kiedy zrobisz pierwszy krok?
+<span class="actor">Marta:</span> Dziś po południu napiszę do Tymoteusza maila.
+<span class="actor">Coach:</span> W skali 1–10 — jak bardzo jesteś zaangażowana w to, że to zrobisz?
+<span class="actor">Marta:</span> Dziewięć.
+<span class="actor">Coach:</span> Co może Cię zatrzymać?
+<span class="actor">Marta:</span> Tylko jeśli spadnie coś pilnego z burmistrzem. Ale wtedy napiszę wieczorem.
+
+<div class="stage-marker">▸ + Domknięcie [28:00–30:00]</div>
+<span class="actor">Coach:</span> Co odkryłaś podczas tej rozmowy?
+<span class="actor">Marta:</span> [długa pauza] Że mój strach nie był o liczby. Tylko o to, że chowam się za tabelą zamiast po prostu powiedzieć szczerze, czego nie wiem. Najgorsze są pytania, na które nie mam odpowiedzi — a najlepsze, co mogę zrobić, to o nich powiedzieć pierwsza.
+<span class="actor">Coach:</span> Co zabierasz ze sobą z tej sesji?
+<span class="actor">Marta:</span> Że jestem coachem dla swojego budżetu. Że nie muszę być nieomylna, żeby było jej zaufanie.
+<span class="actor">Coach:</span> Co ze mnie było pomocne, a co mogłoby być inne?
+<span class="actor">Marta:</span> To „a co jeszcze" mnie wybiło. Trzeci raz mnie zirytowało, ale wtedy znalazłam to, co chciałam powiedzieć.
+
+<div class="stage-marker">▸ Po sesji — notatka coacha</div>
+Czas: 30 min. Klient wybrał Topic szybko, Goal trzeba było pomóc skonkretyzować
+Reality: główna praca emocjonalna — ścisk w żołądku → wartość zaufania
+Options: kluczowy moment — trzecie „a co jeszcze"
+Will: zaangażowanie 9/10, plan z konkretnymi datami
+Następna sesja: za tydzień, po prezentacji — refleksja i nowy cel`;
+
+  document.getElementById('show-demo').addEventListener('click', () => {
+    document.getElementById('demo-script').style.display = 'block';
+    document.getElementById('demo-script').innerHTML = demoScript;
+    document.getElementById('show-demo').style.display = 'none';
+    document.getElementById('hide-demo').style.display = 'inline-block';
+  });
+  document.getElementById('hide-demo').addEventListener('click', () => {
+    document.getElementById('demo-script').style.display = 'none';
+    document.getElementById('show-demo').style.display = 'inline-block';
+    document.getElementById('hide-demo').style.display = 'none';
+  });
+
+  /* ============ BARRIERS ============ */
+  document.querySelectorAll('.barrier').forEach(b => {
+    b.addEventListener('click', () => {
+      b.classList.toggle('flagged');
+      updateBarriersResult();
+    });
+  });
+
+  function updateBarriersResult() {
+    const flagged = document.querySelectorAll('.barrier.flagged').length;
+    const result = document.getElementById('barriers-result');
+    document.getElementById('barriers-count').textContent = flagged;
+    result.style.display = flagged > 0 ? 'block' : 'none';
+  }
+
+  /* ============ CHECKLISTS ============ */
+  document.querySelectorAll('.check-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('done');
+    });
+  });
+
+  /* default: open first competency */
+  setTimeout(() => {
+    const first = document.querySelector('.wheel-segment[data-id="0"]');
+    if (first) {
+      first.classList.add('active');
+      showCompetency(0);
+    }
+  }, 100);
+
+</script>
+</body>
+</html>
